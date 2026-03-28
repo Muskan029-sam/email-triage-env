@@ -31,6 +31,12 @@ cd email-triage-env
 docker build -t email-triage-env .
 
 # Run container
+
+Email Triage Environment
+https://img.shields.io/badge/OpenEnv-Compliant-blue  
+https://img.shields.io/badge/Docker-Ready-lightblue  
+https://img.shields.io/badge/Python-3.10%2B-yellow  
+https://img.shields.io/badge/License-MIT-green
 docker run -p 8000:8000 email-triage-env
 Baseline Scores
 Rule-based agent: baseline accuracy for spam filtering and prioritization.
