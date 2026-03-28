@@ -46,3 +46,13 @@ Baseline Scores
 Rule-based agent: baseline accuracy for spam filtering and prioritization.
 
 LLM baseline: tested with GPT-style models for reply suggestion.
+
+
+# Build the Docker image
+docker build -t email-triage-env .
+
+# Run the container
+docker run -p 8000:8000 email-triage-env
+
+# Run tests locally
+python -m unittest discover tests
