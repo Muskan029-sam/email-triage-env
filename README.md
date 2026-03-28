@@ -81,3 +81,12 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 
 A simple flowchart in the README showing:
+
+python demo.py
+
+output:
+
+Current email: Win a lottery!
+Agent action: spam_filter
+Reward: 1
+
