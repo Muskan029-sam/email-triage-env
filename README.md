@@ -90,3 +90,11 @@ Current email: Win a lottery!
 Agent action: spam_filter
 Reward: 1
 
+## 📊 Baseline Scores
+
+| Task                | Rule-Based Agent | LLM (Inference) |
+|---------------------|------------------|-----------------|
+| Spam detection      | 1.0              | 0.9             |
+| Urgency prioritization | 0.8           | 0.85            |
+| Normal reply        | 0.9              | 0.88            |
+| **Average Score**   | **0.9**          | **0.88**        |
