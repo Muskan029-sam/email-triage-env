@@ -56,3 +56,28 @@ docker run -p 8000:8000 email-triage-env
 
 # Run tests locally
 python -m unittest discover tests
+
+Quickstart Example  
+Show a tiny demo of the environment + agent working together:
+
+python env.py
+
+Current email: Win a lottery!
+Agent action: spam_filter
+Reward: 1
+
+Architecture Diagram
+A simple flowchart in the README showing:
+Email → Environment → Agent → Action → Reward
+
+Baseline Scores Section  
+Add a short table comparing rule-based agent vs. LLM baseline (even if LLM is “future work”):
+
+Contribution Guide
+A short section like:
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss.
+
+
+A simple flowchart in the README showing:
