@@ -1,0 +1,3 @@
+openenv
+pytest        # for running tests
+numpy         # useful for scoring or handling data
