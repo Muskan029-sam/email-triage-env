@@ -35,10 +35,11 @@ docker build -t email-triage-env .
 Email Triage Environment
 # Email Triage Environment  
 
-![OpenEnv Compliant](https://img.shields.io/badge/OpenEnv-Compliant-blue)  
-![Docker Ready](https://img.shields.io/badge/Docker-Ready-lightblue)  
-![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-yellow)  
-![License: MIT](https://img.shields.io/badge/License-MIT-green)  
+ [![OpenEnv Compliant](https://img.shields.io/badge/OpenEnv-Compliant-blue)](https://openenv.org)
+[![Docker Ready](https://img.shields.io/badge/Docker-Ready-lightblue)](https://www.docker.com/)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-yellow)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
+ 
 
 docker run -p 8000:8000 email-triage-env
 Baseline Scores
