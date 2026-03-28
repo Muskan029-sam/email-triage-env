@@ -205,3 +205,23 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.env
+.venv/
+venv/
+
+# Hugging Face / API tokens
+*.token
+*.secret
+
+# Docker artifacts
+*.tar
+*.pid
+
+# Logs
+*.log
