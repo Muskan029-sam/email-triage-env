@@ -1,57 +1,63 @@
-"""
-Inference Script for EmailTriageEnv
-===================================
-MANDATORY for Hackathon Submission
-
-- Reads API_BASE_URL, MODEL_NAME, HF_TOKEN from environment variables
-- Uses OpenAI client to run baseline inference
-- Produces reproducible scores on all tasks
-"""
-
 import os
 from openai import OpenAI
 from env import EmailTriageEnv
-from models import Observation, Reward
 
 # Load environment variables
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co")
-MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4")
-HF_TOKEN = os.getenv("HF_TOKEN")
+API_BASE_URL = os.getenv("API_BASE_URL")
+MODEL_NAME = os.getenv("MODEL_NAME")
+API_KEY = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+client = OpenAI(
+    base_url=API_BASE_URL,
+    api_key=API_KEY
+)
+
+
+def get_llm_action(email_text):
+    prompt = f"""
+You are an email assistant.
+
+Classify the email into one of:
+- spam_filter
+- prioritize
+- reply
+
+Email:
+{email_text}
+
+Answer ONLY with one action.
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+
+    return response.choices[0].message.content.strip()
+
 
 def run_inference():
-    env = EmailTriageEnv()
-    obs = env.reset()
+    env = EmailTriageEnv(level=3)
+
+    state = env.reset()
+    done = False
     total_score = 0
-    num_tasks = 0
+    steps = 0
 
-    while True:
-        # Ask the model what action to take
-        prompt = f"Email subject: {obs.subject}\nEmail body: {obs.body}\nDecide: spam_filter / prioritize / reply"
-        response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=[{"role": "system", "content": "You are an email triage agent."},
-                      {"role": "user", "content": prompt}],
-            temperature=0.2,
-            max_tokens=50
-        )
+    while not done:
+        email_text = f"{state.subject} {state.body}"
 
-        action = response.choices[0].message.content.strip()
-        obs, reward, done = env.step(action)
+        action = get_llm_action(email_text)
 
-        print(f"Email: {obs.subject}")
-        print(f"Model action: {action}")
-        print(f"Reward: {reward.value}\n")
+        state, reward, done, _ = env.step(action)
 
         total_score += reward.value
-        num_tasks += 1
+        steps += 1
 
-        if done:
-            break
+    final_score = total_score / steps
+    print("Final Score:", final_score)
 
-    avg_score = total_score / num_tasks if num_tasks > 0 else 0
-    print(f"Baseline average score: {avg_score:.2f}")
 
 if __name__ == "__main__":
     run_inference()
