@@ -1,100 +1,142 @@
-# email-triage-env
-Email Triage Environment is a real-world simulation built on the OpenEnv specification. It models the everyday task of managing emails — classifying, prioritizing, and responding — so that AI agents can learn to handle productivity workflows effectively. 
-📖 Overview
-Email Triage Environment is a real-world simulation built on the OpenEnv specification. It models the everyday task of managing emails – classifying, prioritizing, and responding – so that AI agents can learn to handle productivity workflows effectively.
 
-🔑 Tasks
-Spam Filtering (Easy): Identify whether an email is spam or not.
+# 📧 Email Triage Environment
 
-Urgency Prioritization (Medium): Distinguish urgent emails from normal ones and rank them.
-
-Reply Suggestion (Hard): Generate appropriate responses for urgent emails based on context.
-
-⚙️ Action & Observation Spaces
-Observation: Email metadata (sender, subject, body, timestamp).
-
-Actions: Classify, prioritize, or generate a reply.
-
-🎯 Reward Function
-Partial credit for correct classification or prioritization.
-
-Full credit for correct triage and appropriate responses.
-
-Penalties for irrelevant or incorrect actions.
-
-🚀 Setup
-# Clone the repo
-git clone https://github.com/<your-username>/email-triage-env.git
-cd email-triage-env
-
-# Build Docker image
-docker build -t email-triage-env .
-
-# Run container
-
-Email Triage Environment
-# Email Triage Environment  
-
- [![OpenEnv Compliant](https://img.shields.io/badge/OpenEnv-Compliant-blue)](https://openenv.org)
+[![OpenEnv Compliant](https://img.shields.io/badge/OpenEnv-Compliant-blue)](https://openenv.org)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-lightblue)](https://www.docker.com/)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-yellow)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
- 
 
-docker run -p 8000:8000 email-triage-env
-Baseline Scores
-Rule-based agent: baseline accuracy for spam filtering and prioritization.
+---
 
-LLM baseline: tested with GPT-style models for reply suggestion.
+## 📖 Overview
 
+Email Triage Environment is a **real-world OpenEnv simulation** of how humans manage emails — filtering spam, prioritizing urgent messages, and responding appropriately.
 
-# Build the Docker image
-docker build -t email-triage-env .
+This environment allows AI agents to **learn and be evaluated** on productivity workflows in a structured, reward-driven setting.
 
-# Run the container
-docker run -p 8000:8000 email-triage-env
+---
 
-# Run tests locally
-python -m unittest discover tests
+## 🎯 Tasks (Easy → Hard)
 
-Quickstart Example  
-Show a tiny demo of the environment + agent working together:
+### 🟢 Task 1: Spam Detection (Easy)
+- **Objective:** Identify spam emails
+- **Action:** `spam_filter` or not
+- **Reward:**  
+  - Correct → `1.0`  
+  - Incorrect → `0.0`
 
-python env.py
+---
 
-Current email: Win a lottery!
-Agent action: spam_filter
-Reward: 1
+### 🟡 Task 2: Urgency Prioritization (Medium)
+- **Objective:** Detect urgent emails
+- **Actions:** `prioritize`, `reply`, `spam_filter`
+- **Reward:**  
+  - Correct → `1.0`  
+  - Partially correct → `0.3`  
+  - Incorrect → `0.0`
 
-Architecture Diagram
-A simple flowchart in the README showing:
-Email → Environment → Agent → Action → Reward
+---
 
-Baseline Scores Section  
-Add a short table comparing rule-based agent vs. LLM baseline (even if LLM is “future work”):
+### 🔴 Task 3: Full Email Triage (Hard)
+- **Objective:** Perform complete triage decision
+- **Actions:**  
+  - `spam_filter` (spam)  
+  - `prioritize` (urgent)  
+  - `reply` (normal)
+- **Reward:**  
+  - Correct → `1.0`  
+  - Incorrect → `0.0`
 
-Contribution Guide
-A short section like:
+---
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss.
+## ⚙️ Environment Design
 
+### 🔹 Observation Space
+```json
+{
+  "subject": "string",
+  "body": "string"
+}
 
-A simple flowchart in the README showing:
+Action Space
+Action
+Description
+spam_filter
+Mark email as spam
+prioritize
+Mark as urgent
+reply
+Respond normally
+🔹 RL Interface
+obs = env.reset()
 
+obs, reward, done, info = env.step(action)
+
+reset() → initial email
+step() → next state + reward
+done → episode ends after inbox processed
+🧠 Reward Design
+Fully deterministic and reproducible
+Score range: 0.0 → 1.0
+Provides:
+Correctness signal
+Partial credit
+Penalization of wrong actions
+
+▶️ Quickstart
+git clone https://github.com/<your-username>/email-triage-env.git
+cd email-triage-env
+
+pip install -r requirements.txt
 python demo.py
 
-output:
+🧪 Example Output
 
-Current email: Win a lottery!
-Agent action: spam_filter
-Reward: 1
+Step 1
+Email Subject: Win a lottery!
+Agent Action: spam_filter
+Reward Received: 1.0
+🤖 Baseline Agent
+A rule-based agent is provided using keyword heuristics:
+Detects spam via keywords like “win”, “lottery”
+Detects urgency via “deadline”, “urgent”
+📊 Baseline Scores
+Task
+Score
+Spam Detection
+1.0
+Urgency Prioritization
+0.8
+Full Triage
+0.9
+Average
+0.9
+⚡ Inference Script
+Run:
+python inference.py
+Output:
+Final Score: 0.9
 
-## 📊 Baseline Scores
+🐳 Docker Setup
 
-| Task                | Rule-Based Agent | LLM (Inference) |
-|---------------------|------------------|-----------------|
-| Spam detection      | 1.0              | 0.9             |
-| Urgency prioritization | 0.8           | 0.85            |
-| Normal reply        | 0.9              | 0.88            |
-| **Average Score**   | **0.9**          | **0.88**        |
+docker build -t email-triage-env .
+docker run -p 8000:8000 email-triage-env
+
+python -m unittest discover tests
+
+🌍 Real-World Use Case
+
+This environment simulates real productivity workflows, useful for:
+Email assistants
+Customer support automation
+Personal AI productivity tools
+
+🚀 Future Improvements
+
+LLM-based reply evaluation
+Larger email datasets
+Multi-user inbox simulation
+
+🤝 Contributing
+
+Pull requests are welcome. For major changes, open an issue first.
