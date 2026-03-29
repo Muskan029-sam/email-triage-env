@@ -3,7 +3,7 @@ description: Environment for spam filtering, urgency prioritization, and reply s
 version: 0.1.0
 
 authors:
-  - Muskan <your-email@example.com>
+  - Muskan <anshika6d5.hts21@gmail.com>
 
 license: MIT
 
@@ -17,3 +17,15 @@ reward_scheme:
   urgency_prioritization: +2 for correct prioritization
   reply_suggestion: +3 for appropriate reply
 
+name: email-triage-env
+entry_point: env.EmailTriageEnv
+
+observation_space:
+  type: object
+
+action_space:
+  type: string
+
+reward:
+  type: float
+  range: [0.0, 1.0]
