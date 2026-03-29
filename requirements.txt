@@ -1,3 +1,4 @@
-openenv
-pytest        # for running tests
-numpy         # useful for scoring or handling data
+openai
+pydantic
+fastapi
+uvicorn
