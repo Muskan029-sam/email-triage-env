@@ -25,35 +25,7 @@ def grade_full_task(self, action, true_label):
         return 0.0
 
 
-def _calculate_reward(self, action, true_label, reason=""):
-    # Handle dict action (for reasoning feature)
-    if isinstance(action, dict):
-        act = action.get("action", "")
-        reason = action.get("reason", "")
-    else:
-        act = action
-
-    # Base reward from task
-    if self.level == 1:
-        base = self.grade_spam(act, true_label)
-
-    elif self.level == 2:
-        base = self.grade_priority(act, true_label)
-
-    elif self.level == 3:
-        base = self.grade_full_task(act, true_label)
-
-    else:
-        base = 0.0
-
-    # Reasoning score (your EDGE feature)
-    reason_score = self._score_reason(reason, true_label)
-
-    # Final reward (weighted)
-    final_reward = 0.7 * base + 0.3 * reason_score
-
-    return min(max(final_reward, 0.0), 1.0)
-    def _score_reason(self, reason, true_label):
+def _score_reason(self, reason, true_label):
     if not reason:
         return 0.0
 
@@ -72,3 +44,48 @@ def _calculate_reward(self, action, true_label, reason=""):
             score += 0.3
 
     return min(score, 1.0)
+
+
+def _consistency_score(self):
+    if len(self.action_history) < 2:
+        return 1.0
+
+    penalty = 0
+    for i in range(1, len(self.action_history)):
+        if self.action_history[i] != self.action_history[i - 1]:
+            penalty += 0.1
+
+    return max(0.0, 1.0 - penalty)
+
+
+def _calculate_reward(self, action, true_label, reason=""):
+    # Handle dict action
+    if isinstance(action, dict):
+        act = action.get("action", "")
+        reason = action.get("reason", "")
+    else:
+        act = action
+
+    # Base reward
+    if self.level == 1:
+        base = self.grade_spam(act, true_label)
+    elif self.level == 2:
+        base = self.grade_priority(act, true_label)
+    elif self.level == 3:
+        base = self.grade_full_task(act, true_label)
+    else:
+        base = 0.0
+
+    # Reasoning score
+    reason_score = self._score_reason(reason, true_label)
+
+    # Store action for consistency
+    self.action_history.append(act)
+
+    # Consistency score
+    consistency = self._consistency_score()
+
+    # Final reward (GOD MODE)
+    final_reward = 0.6 * base + 0.2 * reason_score + 0.2 * consistency
+
+    return min(max(final_reward, 0.0), 1.0)
