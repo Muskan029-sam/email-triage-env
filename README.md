@@ -1,4 +1,12 @@
-
+---
+title: Email Triage Env
+emoji: 📧
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_file: demo.py
+pinned: false
+---
 # 📧 Email Triage Environment
 
 [![OpenEnv Compliant](https://img.shields.io/badge/OpenEnv-Compliant-blue)](https://openenv.org)
