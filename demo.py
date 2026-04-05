@@ -6,9 +6,9 @@ if __name__ == "__main__":
     agent = RuleBasedAgent()
 
     email = env.reset()
-    print("Current email:", email.subject)
+    print("Current email:", email["subject"])
 
-    action = agent.act(email.subject)
+    action = agent.act(email["subject"])
 
     state, reward, done, _ = env.step(action)
 
