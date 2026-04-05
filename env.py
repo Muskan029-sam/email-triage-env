@@ -1,10 +1,36 @@
+from pydantic import BaseModel
+
+
+# ---------- TYPED MODELS ----------
+
+class Observation(BaseModel):
+    subject: str
+    body: str
+    label: str
+
+
+class Action(BaseModel):
+    action: str   # spam_filter / prioritize / reply
+    reason: str = ""
+
+
+class Reward(BaseModel):
+    value: float
+
+
+# ---------- ENVIRONMENT ----------
+
 class EmailTriageEnv:
 
     def __init__(self):
         self.level = 1
         self.current_index = 0
         self.action_history = []
-        self.emails = [...]  
+        self.emails = [
+            {"subject": "Win a free lottery!", "body": "Click now to claim", "label": "spam"},
+            {"subject": "Meeting at 5 PM", "body": "Important deadline discussion", "label": "urgent"},
+            {"subject": "Hello there", "body": "Just checking in", "label": "normal"}
+        ]
 
 
     def reset(self):
@@ -13,7 +39,15 @@ class EmailTriageEnv:
         return self.emails[self.current_index]
 
 
-    
+    # ---------- STATE FUNCTION ----------
+    def state(self):
+        return {
+            "current_index": self.current_index,
+            "current_email": self.emails[self.current_index] if self.current_index < len(self.emails) else None,
+            "history": self.action_history
+        }
+
+
     def step(self, action):
         email = self.emails[self.current_index]
 
@@ -33,7 +67,7 @@ class EmailTriageEnv:
         return observation, reward, done, info
 
 
-    # --- GRADERS BELOW ---
+    # ---------- GRADERS ----------
 
     def grade_spam(self, action, true_label):
         if true_label == "spam":
@@ -49,6 +83,8 @@ class EmailTriageEnv:
             return 1.0 if action == "reply" else 0.3
         elif true_label == "spam":
             return 1.0 if action == "spam_filter" else 0.0
+        else:
+            return 0.0
 
 
     def grade_full_task(self, action, true_label):
@@ -61,6 +97,8 @@ class EmailTriageEnv:
         else:
             return 0.0
 
+
+    # ---------- REWARD HELPERS ----------
 
     def _score_reason(self, reason, true_label):
         if not reason:
@@ -119,4 +157,5 @@ class EmailTriageEnv:
 
         final_reward = 0.6 * base + 0.2 * reason_score + 0.2 * consistency
 
-        return min(max(final_reward, 0.0), 1.0)
+        # ✅ FINAL REWARD (0.0 → 0.1 RANGE)
+        return min(max(final_reward, 0.0), 1.0) / 10
