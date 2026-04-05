@@ -1,16 +1,35 @@
+import gradio as gr
 from env import EmailTriageEnv
 from baseline_agent import RuleBasedAgent
 
-if __name__ == "__main__":
+def run_demo():
     env = EmailTriageEnv()
     agent = RuleBasedAgent()
 
     email = env.reset()
-    print("Current email:", email["subject"])
+    output = ""
 
-    action = agent.act(email["subject"])
+    while email is not None:
+        action = agent.act(email["subject"])
 
-    state, reward, done, _ = env.step(action)
+        email, reward, done, _ = env.step(action)
 
-    print("Agent action:", action)
-    print("Reward:", reward)
+        output += f"📩 Email: {email}\n"
+        output += f"🤖 Action: {action}\n"
+        output += f"⭐ Reward: {reward}\n\n"
+
+        if done:
+            break
+
+    return output
+
+
+iface = gr.Interface(
+    fn=run_demo,
+    inputs=[],
+    outputs="text",
+    title="📧 Email Triage AI",
+    description="Classifies emails into spam, priority, or reply"
+)
+
+iface.launch(server_name="0.0.0.0", server_port=7860)
