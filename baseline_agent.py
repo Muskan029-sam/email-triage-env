@@ -1,9 +1,10 @@
 class RuleBasedAgent:
-    def act(self, email):
-        email_lower = email.lower()
-        if any(word in email_lower for word in ["unsubscribe", "lottery", "win", "free", "offer"]):
+    def act(self, subject):
+        subject = subject.lower()
+
+        if "win" in subject or "free" in subject:
             return "spam_filter"
-        elif any(word in email_lower for word in ["urgent", "asap", "deadline", "important", "immediately"]):
+        elif "meeting" in subject or "deadline" in subject:
             return "prioritize"
         else:
             return "reply"
