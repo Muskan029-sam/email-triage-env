@@ -1,3 +1,4 @@
+[project]
 name = "email-triage-env"
 version = "0.1.0"
 description = "Environment for spam filtering, urgency prioritization, and reply suggestion"
@@ -8,6 +9,10 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+openenv-core = ">=0.2.0"
+
+[project.scripts]
+server = "env.EmailTriageEnv:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]
