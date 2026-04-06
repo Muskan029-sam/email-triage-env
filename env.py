@@ -159,14 +159,3 @@ class EmailTriageEnv:
 
         # ✅ FINAL REWARD (0.0 → 0.1 RANGE)
         return min(max(final_reward, 0.0), 1.0) / 10
-
-# env/EmailTriageEnv.py
-
-from openenv.core import run_env
-
-def main():
-    run_env("openenv.yaml")
-
-# Optional: allow running directly
-if __name__ == "__main__":
-    main()
