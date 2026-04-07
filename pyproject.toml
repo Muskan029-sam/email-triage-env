@@ -1,4 +1,4 @@
-u[project]
+[project]
 name = "email-triage-env"
 version = "0.1.0"
 dependencies = [
