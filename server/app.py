@@ -31,10 +31,17 @@ def step(action: dict):
 
 @app.get("/state")
 def get_state():
+    # ✅ FIX: handle empty/uninitialized state safely
+    if not hasattr(env, "state") or env.state is None:
+        return {"error": "State not initialized. Call /reset first."}
+
     state = env.state
+
     return {
-        "subject": state["subject"],
-        "body": state["body"]
+        "subject": state.get("subject", ""),
+        "body": state.get("body", "")
     }
+
+
 def main():
     return app
