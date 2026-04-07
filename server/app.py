@@ -36,3 +36,5 @@ def get_state():
         "subject": state["subject"],
         "body": state["body"]
     }
+def main():
+    return app
